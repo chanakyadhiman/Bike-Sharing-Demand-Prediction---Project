@@ -1,0 +1,104 @@
+1️⃣ Importing Libraries
+
+import pandas as pd → Used to load and manipulate tabular data.
+
+import numpy as np → Used for numerical and mathematical operations.
+
+import matplotlib.pyplot as plt → Used to create visualizations and plots.
+
+import seaborn as sns → Used to create clean and informative statistical charts.
+
+import statsmodels.api as sm → Used to build and analyze regression models.
+
+from sklearn.model_selection import train_test_split → Used to split data into training and testing sets.
+
+from sklearn.metrics import mean_squared_error, r2_score → Used to evaluate model performance.
+
+2️⃣ Loading the Dataset
+
+df = pd.read_csv(...) → Loads the bike rental dataset into a DataFrame.
+
+df.head() → Displays the first few rows to understand the data structure.
+
+df.info() → Shows data types and checks for missing values.
+
+df.describe() → Provides statistical summary of numerical features.
+
+3️⃣ Data Cleaning & Preprocessing
+
+df.isnull().sum() → Checks for missing values in each column.
+
+df.dropna() / fillna() → Handles missing values to avoid model errors.
+
+df['date'] = pd.to_datetime(...) → Converts date column into datetime format.
+
+df['month'] = df['date'].dt.month → Extracts month for seasonal analysis.
+
+df['year'] = df['date'].dt.year → Extracts year for trend analysis.
+
+4️⃣ Exploratory Data Analysis (EDA)
+
+sns.histplot(df['cnt']) → Visualizes distribution of total bike rentals.
+
+sns.boxplot(x='season', y='cnt', data=df) → Compares rentals across seasons.
+
+sns.scatterplot(x='temp', y='cnt') → Shows relationship between temperature and rentals.
+
+sns.heatmap(df.corr(), annot=True) → Identifies correlations between variables.
+
+5️⃣ Feature Selection
+
+X = df[['temp','atemp','hum','windspeed']] → Selects independent variables for prediction.
+
+y = df['cnt'] → Sets total bike rentals as the target variable.
+
+X = sm.add_constant(X) → Adds intercept term required for regression model.
+
+6️⃣ Train-Test Split
+
+X_train, X_test, y_train, y_test = train_test_split(...)
+→ Splits data to train the model and test its performance on unseen data.
+
+7️⃣ Model Building (Linear Regression)
+
+model = sm.OLS(y_train, X_train) → Defines the linear regression model.
+
+results = model.fit() → Trains the model using training data.
+
+results.summary() → Displays coefficients, p-values, and model statistics.
+
+8️⃣ Predictions
+
+y_pred = results.predict(X_test) → Generates predictions on test data
+
+9️⃣ Model Evaluation
+
+mean_squared_error(y_test, y_pred) → Measures average prediction error.
+
+r2_score(y_test, y_pred) → Measures how well the model explains variance.
+
+🔟 Final Interpretation
+
+Temperature has a positive impact on bike rentals.
+
+Humidity and windspeed negatively affect rentals.
+
+The model explains most of the variance, indicating a good fit.
+
+-->Most Important question in our code based on chatGPT:
+
+Q> Multiple Linear Regression using StatsModels?
+
+A> “We used multiple linear regression to understand how weather factors affect bike rentals and to predict total rentals.
+It connects EDA → feature selection → prediction
+
+Q> Why did you use Label Encoding instead of One-Hot Encoding?
+
+A> Label encoding was used because the categorical variables represent ordered or limited categories, and one-hot encoding would unnecessarily increase dimensionality.
+
+Q> If they ask ‘But one-hot is better’
+
+A> One-hot encoding is better for nominal variables, but in this case the categories are few and meaningful, so label encoding was a reasonable trade-off between simplicity and performance.
+
+Ordered categories → Label Encoding
+Unordered categories → One-Hot Encoding

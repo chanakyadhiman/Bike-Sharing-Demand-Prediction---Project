@@ -1,0 +1,159 @@
+notes of decision tress; random forest; gradient boosting: [TASK-1]
+
+Q> from sklearn.model_selection import GridSearchCV:- 
+➡ Imports GridSearchCV to automatically search for the best hyperparameter combinations
+
+Q> from sklearn.ensemble import RandomForestRegressor:-
+➡ Imports the Decision Tree regression model.
+
+Q> from sklearn.ensemble import RandomForestRegressor:-
+➡ Imports the Random Forest regression model which uses multiple decision trees
+
+Q> from sklearn.ensemble import GradientBoostingRegressor:-
+➡ Imports the Gradient Boosting regression model that builds trees sequentially.
+
+# Decision Tree:
+Decision Tree splits the data into branches based on feature values to make predictions in a simple and interpretable way.
+
+Q> dt = DecisionTreeRegressor(random_state=42)
+➡ Creates a Decision Tree model with fixed randomness for reproducibility
+
+Q>dt_params = {
+    'max_depth': [5, 10, 20],
+    'min_samples_split': [2, 5, 10]
+}
+➡ Defines the hyperparameters and their possible values to be tested for Decision Tree.
+
+Q> dt_grid = GridSearchCV(
+    estimator=dt,
+    param_grid=dt_params,
+    cv=5
+)
+➡ Applies GridSearchCV to test all parameter combinations using 5-fold cross-validation.
+
+Q> dt_grid.fit(X_train, y_train)
+➡ Trains multiple Decision Tree models with different parameter combinations.
+
+Q> print("Decision Tree Best Parameters:", dt_grid.best_params_)
+➡ Displays the best hyperparameter combination found for the Decision Tree model.
+
+#Random Forest:
+Random Forest combines predictions from multiple decision trees to improve accuracy and reduce overfitting.
+
+Q> rf = RandomForestRegressor(random_state=42)
+➡ Creates a Random Forest model with controlled randomness.
+
+Q> rf_params = {
+    'n_estimators': [100, 200],
+    'max_depth': [10, 20],
+    'min_samples_split': [2, 5]
+}
+➡ Defines the hyperparameters to tune for Random Forest.
+
+Q> rf_grid = GridSearchCV(
+    estimator=rf,
+    param_grid=rf_params,
+    cv=3
+)
+➡ Uses GridSearchCV to find the best Random Forest parameters using 3-fold validation.
+
+Q> rf_grid.fit(X_train, y_train)
+➡ Trains Random Forest models with different parameter settings.
+
+Q> print("Random Forest Best Parameters:", rf_grid.best_params_)
+➡ Prints the optimal parameters selected for the Random Forest model.
+
+#Gradient Boosting:
+Gradient Boosting builds models sequentially where each new model corrects the errors of the previous ones.
+
+Q> gb = GradientBoostingRegressor(random_state=42)
+➡ Initializes a Gradient Boosting regression model
+
+Q> gb_params = {
+    'n_estimators': [100, 200],
+    'learning_rate': [0.05, 0.1],
+    'max_depth': [3, 5]
+}
+➡ Specifies the hyperparameters to be tuned for Gradient Boosting.
+
+Q> gb_grid = GridSearchCV(
+    estimator=gb,
+    param_grid=gb_params,
+    cv=3
+)
+➡ Applies GridSearchCV to identify the best Gradient Boosting parameters.
+
+Q> gb_grid.fit(X_train, y_train)
+➡ Trains Gradient Boosting models with different parameter combinations.
+
+Q> print("Gradient Boosting Best Parameters:", gb_grid.best_params_)
+➡ Outputs the best hyperparameter values for the Gradient Boosting model.
+
+Evaluating model performance with different hyperparameter values using cross-validation techniques:[TASK-2]
+
+Q>from sklearn.model_selection import cross_val_score
+➡ Imports the function used to evaluate model performance using cross-validation.
+
+#Decision Tree – Cross-Validation:
+
+Q>dt_best_model = dt_grid.best_estimator_
+➡ Retrieves the Decision Tree model with the best hyperparameters obtained from GridSearchCV.
+
+Q>dt_cv_scores = cross_val_score(dt_best_model,X_train,y_train,cv=5,scoring='neg_root_mean_squared_error')
+➡ Starts cross-validation evaluation for the tuned Decision Tree model.
+➡ Specifies the tuned Decision Tree model to be evaluated.
+➡ Provides the input training features for cross-validation
+➡ Provides the target values corresponding to the training data.
+➡ Splits the training data into 5 folds for cross-validation.
+➡ Uses RMSE as the performance metric for evaluation.
+
+Q>print("Decision Tree CV RMSE:", -dt_cv_scores.mean())
+➡ Prints the average RMSE across all cross-validation folds.
+
+#Random Forest – Cross-Validation:
+
+Q>rf_best_model = rf_grid.best_estimator_
+➡ Extracts the best Random Forest model obtained after hyperparameter tuning.
+
+Q>rf_cv_scores = cross_val_score(rf_best_model,    X_train,Y_train,cv=5,    scoring='neg_root_mean_squared_error')
+➡ Begins cross-validation for the tuned Random Forest model.
+➡ Specifies the tuned Random Forest model.
+➡ Supplies training input features.
+➡ Supplies training target values.
+➡ Applies 5-fold cross-validation.
+➡ Evaluates model performance using RMSE.
+
+Q>print("Random Forest CV RMSE:", -rf_cv_scores.mean())
+➡ Displays the average cross-validated RMSE for Random Forest.
+
+#Gradient Boosting – Cross-Validation:
+
+Q>gb_best_model = gb_grid.best_estimator_
+➡ Selects the best Gradient Boosting model after hyperparameter tuning.
+
+Q>gb_cv_scores = cross_val_score(gb_best_model,    X_train,y_train,cv=5,    scoring='neg_root_mean_squared_error')
+➡ Initiates cross-validation for the tuned Gradient Boosting model.
+➡ Uses the optimized Gradient Boosting model.
+➡ Passes training features to the model.
+➡ Passes training target values.
+➡ Performs 5-fold cross-validation.
+➡ Uses RMSE as the evaluation metric.
+
+Q>print("Gradient Boosting CV RMSE:", -gb_cv_scores.mean())
+➡ Outputs the average RMSE across all folds.
+
+Q>Final one line answer:
+Evaluated the tuned models using cross-validation to ensure consistent performance across multiple data splits
+
+Q> Why did we use same models that we used in task 1?
+A>Since hyperparameter tuning optimizes the models, cross-validation is performed on the same tuned Decision Tree, Random Forest, and Gradient Boosting models to validate their performance across multiple folds.
+
+Q>What does best_estimator_ represent?
+A>It represents the model trained with the best hyperparameter combination found during GridSearchCV.
+
+Q>How does cross-validation help prevent overfitting?
+A>It evaluates the model on multiple unseen folds, ensuring the model performs consistently and not just on a single subset.
+
+Q>Why did you use RMSE as the evaluation metric?
+A>RMSE penalizes larger errors more strongly and is well-suited for regression problems like demand prediction.
+
